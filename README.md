@@ -78,7 +78,6 @@ require("oil-git").setup({
   highlights = {
     OilGitAdded = { fg = "#a6e3a1" },     -- green
     OilGitModified = { fg = "#f9e2af" },  -- yellow  
-    OilGitDeleted = { fg = "#f38ba8" },   -- red
     OilGitRenamed = { fg = "#cba6f7" },   -- purple
     OilGitUntracked = { fg = "#89b4fa" }, -- blue
     OilGitIgnored = { fg = "#6c7086" },   -- gray
@@ -90,12 +89,11 @@ require("oil-git").setup({
 
 | Status | Symbol | Color | Description |
 |--------|---------|-------|-------------|
-| **+** | Added | Green | Staged new file |
-| **~** | Modified | Yellow | Modified file (staged or unstaged) |
-| **-** | Deleted | Red | Deleted file |
-| **→** | Renamed | Purple | Renamed file |
-| **?** | Untracked | Blue | New untracked file |
-| **!** | Ignored | Gray | Ignored file |
+| Added | **+** | Green | Staged new file |
+| Modified | **~** | Yellow | Modified file (staged or unstaged) |
+| Renamed | **→** | Purple | Renamed file |
+| Untracked | **?** | Blue | New untracked file |
+| Ignored | **!** | Gray | Ignored file |
 
 ## Auto-refresh Triggers
 
