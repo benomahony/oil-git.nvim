@@ -19,12 +19,12 @@ local function setup_highlights()
 end
 
 local function get_git_root(path)
-	local git_dir = vim.fn.finddir(".git", path .. ";")
-	if git_dir == "" then
+	local git_toplevel = vim.fn.system("git rev-parse --show-toplevel")
+	if vim.v.shell_error == 0 then
+		return vim.trim(git_toplevel)
+	else
 		return nil
 	end
-	-- Get the parent directory of .git, not .git itself
-	return vim.fn.fnamemodify(git_dir, ":p:h:h")
 end
 
 local function get_git_status(dir)
