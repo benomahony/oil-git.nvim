@@ -19,12 +19,19 @@ local function setup_highlights()
 end
 
 local function get_git_root(path)
-	local git_dir = vim.fn.finddir(".git", path .. ";")
-	if git_dir == "" then
+	-- Use vim.fs.find for cross-platform compatibility
+	local git_dirs = vim.fs.find(".git", {
+		path = path,
+		upward = true,
+		type = "directory",
+	})
+
+	if #git_dirs == 0 then
 		return nil
 	end
-	-- Get the parent directory of .git, not .git itself
-	return vim.fn.fnamemodify(git_dir, ":p:h:h")
+
+	-- Get the parent directory of .git
+	return vim.fs.dirname(git_dirs[1])
 end
 
 local function get_git_status(dir)
@@ -230,7 +237,7 @@ local function initialize()
 	if initialized then
 		return
 	end
-	
+
 	setup_highlights()
 	setup_autocmds()
 	initialized = true
