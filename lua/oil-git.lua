@@ -230,7 +230,7 @@ local function initialize()
 	if initialized then
 		return
 	end
-	
+
 	setup_highlights()
 	setup_autocmds()
 	initialized = true
