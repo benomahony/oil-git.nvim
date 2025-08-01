@@ -35,7 +35,8 @@ Git status integration for [oil.nvim](https://github.com/stevearc/oil.nvim) that
   opts = {
     highlights = {
       OilGitModified = { fg = "#ff0000" }, -- Custom colors
-    }
+    },
+    ignore_git_signs = true, -- Gets rid of annoying cursor flickering by disabling listening for updates from GitSigns
   }
 }
 ```
@@ -82,7 +83,8 @@ require("oil-git").setup({
     OilGitRenamed = { fg = "#cba6f7" },   -- purple
     OilGitUntracked = { fg = "#89b4fa" }, -- blue
     OilGitIgnored = { fg = "#6c7086" },   -- gray
-  }
+  },
+  ignore_git_signs = false,
 })
 ```
 

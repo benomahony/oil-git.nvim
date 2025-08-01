@@ -9,6 +9,8 @@ local default_highlights = {
 	OilGitIgnored = { fg = "#6c7086" },
 }
 
+local ignore_git_signs = false
+
 local function setup_highlights()
 	-- Only set highlight if it doesn't already exist (respects colorscheme)
 	for name, opts in pairs(default_highlights) do
@@ -212,9 +214,13 @@ local function setup_autocmds()
 	})
 
 	-- Also catch common git-related user events
+	local user_events = { "FugitiveChanged", "LazyGitClosed" }
+	if not ignore_git_signs then
+		table.insert(user_events, "GitSignsUpdate")
+	end
 	vim.api.nvim_create_autocmd("User", {
 		group = group,
-		pattern = { "FugitiveChanged", "GitSignsUpdate", "LazyGitClosed" },
+		pattern = user_events,
 		callback = function()
 			if vim.bo.filetype == "oil" then
 				vim.schedule(apply_git_highlights)
@@ -243,6 +249,9 @@ function M.setup(opts)
 	if opts.highlights then
 		default_highlights = vim.tbl_extend("force", default_highlights, opts.highlights)
 	end
+
+	-- This options ignores the update on the "GitSignsUpdate" user event to get rid of the annoying cursor flickering
+	ignore_git_signs = opts.ignore_git_signs or false
 
 	initialize()
 end
