@@ -229,6 +229,16 @@ local function setup_autocmds()
 	})
 end
 
+local function setup_commands()
+	vim.api.nvim_create_user_command("OilGitDisable", function()
+		vim.api.nvim_del_augroup_by_name("OilGitStatus")
+	end, { desc = "Disable OilGit" })
+
+	vim.api.nvim_create_user_command("OilGitEnable", function()
+		setup_autocmds()
+	end, { desc = "Enable OilGit" })
+end
+
 -- Track if plugin has been initialized
 local initialized = false
 
@@ -239,6 +249,7 @@ local function initialize()
 	
 	setup_highlights()
 	setup_autocmds()
+	setup_commands()
 	initialized = true
 end
 

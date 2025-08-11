@@ -90,14 +90,14 @@ require("oil-git").setup({
 
 ## Git Status Display
 
-| Status | Symbol | Color | Description |
-|--------|---------|-------|-------------|
-| **+** | Added | Green | Staged new file |
-| **~** | Modified | Yellow | Modified file (staged or unstaged) |
-| **-** | Deleted | Red | Deleted file |
-| **→** | Renamed | Purple | Renamed file |
-| **?** | Untracked | Blue | New untracked file |
-| **!** | Ignored | Gray | Ignored file |
+| Status | Symbol    | Color  | Description                        |
+|--------|-----------|--------|------------------------------------|
+| **+**  | Added     | Green  | Staged new file                    |
+| **~**  | Modified  | Yellow | Modified file (staged or unstaged) |
+| **-**  | Deleted   | Red    | Deleted file                       |
+| **→**  | Renamed   | Purple | Renamed file                       |
+| **?**  | Untracked | Blue   | New untracked file                 |
+| **!**  | Ignored   | Gray   | Ignored file                       |
 
 ## Auto-refresh Triggers
 
@@ -113,6 +113,8 @@ The plugin automatically refreshes git status when:
 ## Commands
 
 - `:lua require("oil-git").refresh()` - Manually refresh git status
+- `:OilGitDisable` - Disable Oil Git e.g. when it is too laggy
+- `:OilGitEnable` - Enable Oil Git when it is disabled
 
 ## Requirements
 
