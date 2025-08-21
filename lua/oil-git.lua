@@ -154,9 +154,11 @@ local function apply_git_highlights()
 					-- Add symbol as virtual text at the end of the line
 					local ns_id = vim.api.nvim_create_namespace("oil_git_status")
 					local symbol_text = M.prefix .. symbol
-					vim.api.nvim_buf_set_extmark(bufnr, ns_id, i - 1, 0, {
+					-- Position at the actual end of the line content instead of EOL
+					local line_len = #line
+					vim.api.nvim_buf_set_extmark(bufnr, ns_id, i - 1, line_len, {
 						virt_text = { { symbol_text, hl_group } },
-						virt_text_pos = "eol",
+						virt_text_pos = "inline",
 					})
 				end
 			end
