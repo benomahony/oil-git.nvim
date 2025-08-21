@@ -153,9 +153,12 @@ local function apply_git_highlights()
 
 					-- Add symbol as virtual text at the end of the line
 					local ns_id = vim.api.nvim_create_namespace("oil_git_status")
-					vim.api.nvim_buf_set_extmark(bufnr, ns_id, i - 1, 0, {
-						virt_text = { { " " .. symbol, hl_group } },
-						virt_text_pos = "eol",
+					local symbol_text = M.prefix .. symbol
+					-- Position at the actual end of the line content instead of EOL
+					local line_len = #line
+					vim.api.nvim_buf_set_extmark(bufnr, ns_id, i - 1, line_len, {
+						virt_text = { { symbol_text, hl_group } },
+						virt_text_pos = "inline",
 					})
 				end
 			end
@@ -226,6 +229,9 @@ end
 -- Track if plugin has been initialized
 local initialized = false
 
+-- Default prefix setting (can be overridden in setup)
+M.prefix = " "
+
 local function initialize()
 	if initialized then
 		return
@@ -243,6 +249,9 @@ function M.setup(opts)
 	if opts.highlights then
 		default_highlights = vim.tbl_extend("force", default_highlights, opts.highlights)
 	end
+
+	-- Store prefix option
+	M.prefix = opts.prefix ~= nil and opts.prefix or " " -- Default to single space
 
 	initialize()
 end
