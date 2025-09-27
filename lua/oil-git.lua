@@ -40,7 +40,7 @@ local function get_git_status(dir)
 		return {}
 	end
 
-	local status = {}
+	local file_status = {}
 	for line in output:gmatch("[^\r\n]+") do
 		if #line >= 3 then
 			local status_code = line:sub(1, 2)
@@ -62,10 +62,28 @@ local function get_git_status(dir)
 			-- Convert to absolute path
 			local abs_path = git_root .. "/" .. filepath
 
-			status[abs_path] = status_code
+			file_status[abs_path] = status_code
 		end
 	end
 
+	local dir_status = {}
+	for file_path, status_code in pairs(file_status) do
+		local parent_dir = file_path:match("(.*)/[^/]+$")
+		while parent_dir and parent_dir ~= git_root do
+			if not dir_status[parent_dir] then
+				dir_status[parent_dir] = status_code
+			else
+				if status_code ~= " " and status_code ~= "!" then
+					dir_status[parent_dir] = "M"
+				end
+			end
+
+			-- move up to next parent directory
+			parent_dir = parent_dir:match("(.*)/[^/]+$")
+		end
+	end
+
+	local status = vim.tbl_extend("keep", file_status, dir_status)
 	return status
 end
 
