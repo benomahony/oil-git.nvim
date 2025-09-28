@@ -9,12 +9,21 @@ local default_highlights = {
 	OilGitIgnored = { fg = "#6c7086" },
 }
 
+local status_priority_list = { " M", " A", " D", " R", " U", "??", "!!" }
+local status_priority = {}
+
 local function setup_highlights()
 	-- Only set highlight if it doesn't already exist (respects colorscheme)
 	for name, opts in pairs(default_highlights) do
 		if vim.fn.hlexists(name) == 0 then
 			vim.api.nvim_set_hl(0, name, opts)
 		end
+	end
+end
+
+local function setup_status_priority()
+	for i, val in ipairs(status_priority_list) do
+		status_priority[val] = i
 	end
 end
 
@@ -40,7 +49,8 @@ local function get_git_status(dir)
 		return {}
 	end
 
-	local status = {}
+
+	local file_status = {}
 	for line in output:gmatch("[^\r\n]+") do
 		if #line >= 3 then
 			local status_code = line:sub(1, 2)
@@ -62,10 +72,27 @@ local function get_git_status(dir)
 			-- Convert to absolute path
 			local abs_path = git_root .. "/" .. filepath
 
-			status[abs_path] = status_code
+			file_status[abs_path] = status_code
 		end
 	end
 
+	local dir_status = {}
+	for file_path, status_code in pairs(file_status) do
+		local parent_dir = file_path:match("(.*)/[^/]+$")
+		while parent_dir and parent_dir ~= git_root do
+			local dstat = dir_status[parent_dir]
+			if not dstat then
+				dir_status[parent_dir] = status_code
+			elseif status_priority[status_code] < status_priority[dstat] then
+				dir_status[parent_dir] = status_code
+			end
+
+			-- move up to next parent directory
+			parent_dir = parent_dir:match("(.*)/[^/]+$")
+		end
+	end
+
+	local status = vim.tbl_extend("keep", file_status, dir_status)
 	return status
 end
 
@@ -138,7 +165,7 @@ local function apply_git_highlights()
 
 	for i, line in ipairs(lines) do
 		local entry = oil.get_entry_on_line(bufnr, i)
-		if entry and entry.type == "file" then
+		if entry then
 			local filepath = current_dir .. entry.name
 
 			local status_code = git_status[filepath]
@@ -148,8 +175,10 @@ local function apply_git_highlights()
 				-- Find the filename part in the line and highlight it
 				local name_start = line:find(entry.name, 1, true)
 				if name_start then
-					-- Highlight the filename
-					vim.fn.matchaddpos(hl_group, { { i, name_start, #entry.name } })
+					if entry.type == "file" then
+						-- Highlight the filename
+						vim.fn.matchaddpos(hl_group, { { i, name_start, #entry.name } })
+					end
 
 					-- Add symbol as virtual text at the end of the line
 					local ns_id = vim.api.nvim_create_namespace("oil_git_status")
@@ -233,6 +262,7 @@ local function initialize()
 	end
 
 	setup_highlights()
+	setup_status_priority()
 	setup_autocmds()
 	initialized = true
 end
