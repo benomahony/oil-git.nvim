@@ -19,7 +19,11 @@ local function setup_highlights()
 end
 
 local function get_git_root(path)
-	local git_dir = vim.fn.finddir(".git", path .. ";")
+	local git_dir = vim.fn.findfile(".git", path .. ";")
+	if git_dir ~= "" then
+		return vim.fn.fnamemodify(git_dir, ":p:h")
+	end
+	git_dir = vim.fn.finddir(".git", path .. ";")
 	if git_dir == "" then
 		return nil
 	end
