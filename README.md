@@ -11,7 +11,6 @@ Git status integration for [oil.nvim](https://github.com/stevearc/oil.nvim) that
 - 🎨 **File name highlighting** - Colors files based on git status
 - 📝 **Status symbols** - Shows git symbols at end of lines
 - 🚀 **Real-time updates** - Automatically refreshes when git changes occur
-- ⚡ **Performance optimized** - No caching, always fresh git status
 - 🔄 **LazyGit integration** - Updates instantly when closing LazyGit or other git tools
 
 ## Installation
