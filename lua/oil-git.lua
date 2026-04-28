@@ -9,6 +9,15 @@ local default_highlights = {
 	OilGitIgnored = { fg = "#6c7086" },
 }
 
+-- same as highlight colors
+local symbols = {
+	OilGitAdded = "+",
+	OilGitModified = "~",
+	OilGitRenamed = "→",
+	OilGitUntracked = "?",
+	OilGitIgnored = "!",
+}
+
 local function setup_highlights()
 	-- Only set highlight if it doesn't already exist (respects colorscheme)
 	for name, opts in pairs(default_highlights) do
@@ -83,26 +92,26 @@ local function get_highlight_group(status_code)
 
 	-- Check staged changes first (prioritize staged over unstaged)
 	if first_char == "A" then
-		return "OilGitAdded", "+"
+		return "OilGitAdded", symbols.OilGitAdded
 	elseif first_char == "M" then
-		return "OilGitModified", "~"
+		return "OilGitModified", symbols.OilGitModified
 	elseif first_char == "R" then
-		return "OilGitRenamed", "→"
+		return "OilGitRenamed", symbols.OilGitRenamed
 	end
 
 	-- Check unstaged changes
 	if second_char == "M" then
-		return "OilGitModified", "~"
+		return "OilGitModified", symbols.OilGitModified
 	end
 
 	-- Untracked files
 	if status_code == "??" then
-		return "OilGitUntracked", "?"
+		return "OilGitUntracked", symbols.OilGitUntracked
 	end
 
 	-- Ignored files
 	if status_code == "!!" then
-		return "OilGitIgnored", "!"
+		return "OilGitIgnored", symbols.OilGitIgnored
 	end
 
 	return nil, nil
@@ -247,6 +256,10 @@ function M.setup(opts)
 	-- Merge user highlights with defaults (only affects fallbacks)
 	if opts.highlights then
 		default_highlights = vim.tbl_extend("force", default_highlights, opts.highlights)
+	end
+
+	if opts.symbols then
+		symbols = vim.tbl_extend("force", symbols, opts.symbols)
 	end
 
 	initialize()
